@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Clinic_Management_API.Models;
+using Clinic_Management_API.Repository;
+using Clinic_Management_API.Repository.IRepository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using AutoMapper;
+using Clinic_Management_API.Mapper;
 
 namespace Clinic_Management_API
 {
@@ -32,7 +36,11 @@ namespace Clinic_Management_API
             services.AddControllersWithViews();
             services.AddDbContext<ClinicDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Clinic")));
-            
+            //UnitOfWork and Repository
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            //Mapping
+            services.AddAutoMapper(typeof(Mapping));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
