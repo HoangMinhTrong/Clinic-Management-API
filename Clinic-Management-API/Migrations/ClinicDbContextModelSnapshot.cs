@@ -88,11 +88,29 @@ namespace Clinic_Management_API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "feafd216-4d3f-435b-abd2-bc180d3f45e1",
+                            Email = "tronggaw2@gmail.com",
+                            EmailConfirmed = true,
+                            FirstName = "Nguyen",
+                            LastName = "Ha",
+                            LockoutEnabled = false,
+                            PasswordHash = "Admin@123",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "ecfc1461-a68e-4bda-a78a-c9997372da36",
+                            TwoFactorEnabled = false,
+                            UserName = "XuanHa"
+                        });
                 });
 
             modelBuilder.Entity("Clinic_Management_API.Models.CheckUp", b =>
                 {
-                    b.Property<int>("check_id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -122,19 +140,39 @@ namespace Clinic_Management_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("check_id");
+                    b.HasKey("Id");
+
+                    b.HasIndex("equip_id");
 
                     b.HasIndex("med_id");
+
+                    b.HasIndex("treat_id");
 
                     b.HasIndex("user_id");
 
                     b.ToTable("CheckUps");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            complain = "Nothing to Complain",
+                            date_time = "01/01/2021",
+                            equip_id = 1,
+                            findings = "Cure hemorrhoids",
+                            med_id = 1,
+                            quantity = "2",
+                            treat_id = 1,
+                            user_id = "1"
+                        });
                 });
 
             modelBuilder.Entity("Clinic_Management_API.Models.Equipment", b =>
                 {
-                    b.Property<int>("equip_id")
-                        .HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("date_defected")
                         .HasColumnType("nvarchar(max)");
@@ -145,14 +183,30 @@ namespace Clinic_Management_API.Migrations
                     b.Property<string>("requested_date")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("equip_id");
+                    b.HasKey("Id");
 
                     b.ToTable("Equipments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            date_defected = "01/01/2021",
+                            equip_name = "AED defibrillators",
+                            requested_date = "01/01/2004"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            date_defected = "01/01/2021",
+                            equip_name = "Autoclave Sterilizer",
+                            requested_date = "01/01/2004"
+                        });
                 });
 
             modelBuilder.Entity("Clinic_Management_API.Models.Medicine", b =>
                 {
-                    b.Property<int>("med_id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -175,22 +229,48 @@ namespace Clinic_Management_API.Migrations
                     b.Property<string>("requested_date")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("med_id");
+                    b.HasKey("Id");
 
                     b.ToTable("Medicines");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            available_qty = 999,
+                            description = "Nothing",
+                            expiry_date = "01/01/2019",
+                            med_name = "Bandage",
+                            quantity = 9,
+                            requested_date = "01/01/2021"
+                        });
                 });
 
             modelBuilder.Entity("Clinic_Management_API.Models.Treatment", b =>
                 {
-                    b.Property<int>("treat_id")
-                        .HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
 
                     b.Property<string>("streat_type")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("treat_id");
+                    b.HasKey("Id");
 
                     b.ToTable("Treatments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            streat_type = "Cure hemorrhoids"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            streat_type = "Lung disease treatment"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -326,9 +406,21 @@ namespace Clinic_Management_API.Migrations
 
             modelBuilder.Entity("Clinic_Management_API.Models.CheckUp", b =>
                 {
+                    b.HasOne("Clinic_Management_API.Models.Equipment", "Equipment")
+                        .WithMany("CheckUps")
+                        .HasForeignKey("equip_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Clinic_Management_API.Models.Medicine", "Medicine")
                         .WithMany("CheckUps")
                         .HasForeignKey("med_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Clinic_Management_API.Models.Treatment", "Treatment")
+                        .WithMany("CheckUps")
+                        .HasForeignKey("treat_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -340,29 +432,11 @@ namespace Clinic_Management_API.Migrations
 
                     b.Navigation("AppUser");
 
+                    b.Navigation("Equipment");
+
                     b.Navigation("Medicine");
-                });
 
-            modelBuilder.Entity("Clinic_Management_API.Models.Equipment", b =>
-                {
-                    b.HasOne("Clinic_Management_API.Models.CheckUp", "CheckUp")
-                        .WithMany("Equipments")
-                        .HasForeignKey("equip_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CheckUp");
-                });
-
-            modelBuilder.Entity("Clinic_Management_API.Models.Treatment", b =>
-                {
-                    b.HasOne("Clinic_Management_API.Models.CheckUp", "CheckUp")
-                        .WithMany("Treatments")
-                        .HasForeignKey("treat_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CheckUp");
+                    b.Navigation("Treatment");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -421,14 +495,17 @@ namespace Clinic_Management_API.Migrations
                     b.Navigation("CheckUps");
                 });
 
-            modelBuilder.Entity("Clinic_Management_API.Models.CheckUp", b =>
+            modelBuilder.Entity("Clinic_Management_API.Models.Equipment", b =>
                 {
-                    b.Navigation("Equipments");
-
-                    b.Navigation("Treatments");
+                    b.Navigation("CheckUps");
                 });
 
             modelBuilder.Entity("Clinic_Management_API.Models.Medicine", b =>
+                {
+                    b.Navigation("CheckUps");
+                });
+
+            modelBuilder.Entity("Clinic_Management_API.Models.Treatment", b =>
                 {
                     b.Navigation("CheckUps");
                 });

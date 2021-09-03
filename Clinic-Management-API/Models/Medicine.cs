@@ -6,7 +6,7 @@ namespace Clinic_Management_API.Models
     public class Medicine
     {
         [Key]
-        public int med_id { get; set; }
+        public int Id { get; set; }
         public string med_name { get; set; }
         public int quantity  { get; set; }
         public int available_qty { get; set; }
