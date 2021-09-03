@@ -18,6 +18,16 @@ namespace Clinic_Management_API.Configurations
                 .HasForeignKey(x => x.med_id)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(x => x.Equipment)
+                .WithMany(x => x.CheckUps)
+                .HasForeignKey(x => x.equip_id)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(x => x.Treatment)
+                .WithMany(x => x.CheckUps)
+                .HasForeignKey(x => x.treat_id)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
