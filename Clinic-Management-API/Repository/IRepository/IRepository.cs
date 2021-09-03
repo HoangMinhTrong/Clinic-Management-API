@@ -10,8 +10,10 @@ namespace Clinic_Management_API.Repository.IRepository
     {
     // Add
     void Add(T entity);
-
-      
+    bool AddTypeBool(T entity);
+    bool UpdateTypeBool(T entity);
+    bool DeleteTypeBool(T entity);
+    bool SaveChange();
     void AddRange(IEnumerable<T> entites);
 
     Task AddAsync(T entity);
@@ -37,7 +39,6 @@ namespace Clinic_Management_API.Repository.IRepository
         Expression<Func<T, bool>> predicate,
         string includeProperties = null);
 
-
     T GetById(int? id);
     T GetById(int id);
     T GetById(string id);
@@ -48,9 +49,9 @@ namespace Clinic_Management_API.Repository.IRepository
     // Find
     //T Find(Expression<Func<T, bool>> predicate);
     Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
-
     // Update
     void Update(T entity);
     //Task<T> UpdateAsync(T entity);
     }
+    // Existing
 }
