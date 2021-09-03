@@ -1,5 +1,6 @@
 ﻿
 using Clinic_Management_API.Configurations;
+using Clinic_Management_API.Models.DataSeed;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,8 +18,8 @@ namespace Clinic_Management_API.Models
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new AppUserConfigurations());
             modelBuilder.ApplyConfiguration(new CheckUpConfigurations());
-            modelBuilder.ApplyConfiguration(new EquipmentConfigurations());
-            modelBuilder.ApplyConfiguration(new TreatmentConfigurations());
+            //seed
+            modelBuilder.Seeds();
         }
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<CheckUp> CheckUps { get; set; }

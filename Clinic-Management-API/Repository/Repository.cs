@@ -13,6 +13,8 @@ namespace Clinic_Management_API.Repository
     {
          private readonly ClinicDbContext _db;
         internal DbSet<T> dbSet;
+        private IRepository<T> _repositoryImplementation;
+
         public Repository(ClinicDbContext db)
         {
             _db = db;
@@ -23,6 +25,31 @@ namespace Clinic_Management_API.Repository
         {
             dbSet.Add(entity);
         }
+
+        public bool AddTypeBool(T entity)
+        {
+            dbSet.Add(entity);
+            return SaveChange();
+        }
+
+        public bool UpdateTypeBool(T entity)
+        {
+            dbSet.Update(entity);
+            return SaveChange();
+        }
+
+        public bool DeleteTypeBool(T entity)
+        {
+            dbSet.Remove(entity);
+            return SaveChange();
+        }
+
+        public bool SaveChange()
+        {
+            return _db.SaveChanges() >= 0 ? true : false;
+        }
+
+
         public async Task AddAsync(T entity)
         {
             await dbSet.AddAsync(entity);
@@ -37,6 +64,8 @@ namespace Clinic_Management_API.Repository
         {
             return await dbSet.Where(predicate).ToListAsync();
         }
+
+        
 
         public IEnumerable<T> GetAll()
         {
@@ -92,6 +121,8 @@ namespace Clinic_Management_API.Repository
         {
             throw new NotImplementedException();
         }
+
+        
 
         public T GetById(int? id)
         {

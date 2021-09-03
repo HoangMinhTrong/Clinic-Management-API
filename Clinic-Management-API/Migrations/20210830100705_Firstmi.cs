@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Clinic_Management_API.Migrations
 {
-    public partial class @new : Migration
+    public partial class Firstmi : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,10 +49,25 @@ namespace Clinic_Management_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Equipments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    equip_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    requested_date = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    date_defected = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Equipments", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Medicines",
                 columns: table => new
                 {
-                    med_id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     med_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     quantity = table.Column<int>(type: "int", nullable: false),
@@ -63,7 +78,20 @@ namespace Clinic_Management_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Medicines", x => x.med_id);
+                    table.PrimaryKey("PK_Medicines", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Treatments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    streat_type = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Treatments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -176,7 +204,7 @@ namespace Clinic_Management_API.Migrations
                 name: "CheckUps",
                 columns: table => new
                 {
-                    check_id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     user_id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     complain = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -189,7 +217,7 @@ namespace Clinic_Management_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CheckUps", x => x.check_id);
+                    table.PrimaryKey("PK_CheckUps", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CheckUps_AspNetUsers_user_id",
                         column: x => x.user_id,
@@ -197,50 +225,57 @@ namespace Clinic_Management_API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_CheckUps_Equipments_equip_id",
+                        column: x => x.equip_id,
+                        principalTable: "Equipments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_CheckUps_Medicines_med_id",
                         column: x => x.med_id,
                         principalTable: "Medicines",
-                        principalColumn: "med_id",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Equipments",
-                columns: table => new
-                {
-                    equip_id = table.Column<int>(type: "int", nullable: false),
-                    equip_name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    requested_date = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    date_defected = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Equipments", x => x.equip_id);
                     table.ForeignKey(
-                        name: "FK_Equipments_CheckUps_equip_id",
-                        column: x => x.equip_id,
-                        principalTable: "CheckUps",
-                        principalColumn: "check_id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Treatments",
-                columns: table => new
-                {
-                    treat_id = table.Column<int>(type: "int", nullable: false),
-                    streat_type = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Treatments", x => x.treat_id);
-                    table.ForeignKey(
-                        name: "FK_Treatments_CheckUps_treat_id",
+                        name: "FK_CheckUps_Treatments_treat_id",
                         column: x => x.treat_id,
-                        principalTable: "CheckUps",
-                        principalColumn: "check_id",
+                        principalTable: "Treatments",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "1", 0, "feafd216-4d3f-435b-abd2-bc180d3f45e1", "tronggaw2@gmail.com", true, "Nguyen", "Ha", false, null, null, null, "Admin@123", null, false, "ecfc1461-a68e-4bda-a78a-c9997372da36", false, "XuanHa" });
+
+            migrationBuilder.InsertData(
+                table: "Equipments",
+                columns: new[] { "Id", "date_defected", "equip_name", "requested_date" },
+                values: new object[,]
+                {
+                    { 1, "01/01/2021", "AED defibrillators", "01/01/2004" },
+                    { 2, "01/01/2021", "Autoclave Sterilizer", "01/01/2004" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Medicines",
+                columns: new[] { "Id", "available_qty", "description", "expiry_date", "med_name", "quantity", "requested_date" },
+                values: new object[] { 1, 999, "Nothing", "01/01/2019", "Bandage", 9, "01/01/2021" });
+
+            migrationBuilder.InsertData(
+                table: "Treatments",
+                columns: new[] { "Id", "streat_type" },
+                values: new object[,]
+                {
+                    { 1, "Cure hemorrhoids" },
+                    { 2, "Lung disease treatment" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "CheckUps",
+                columns: new[] { "Id", "complain", "date_time", "equip_id", "findings", "med_id", "quantity", "treat_id", "user_id" },
+                values: new object[] { 1, "Nothing to Complain", "01/01/2021", 1, "Cure hemorrhoids", 1, "2", 1, "1" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -282,9 +317,19 @@ namespace Clinic_Management_API.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CheckUps_equip_id",
+                table: "CheckUps",
+                column: "equip_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CheckUps_med_id",
                 table: "CheckUps",
                 column: "med_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CheckUps_treat_id",
+                table: "CheckUps",
+                column: "treat_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CheckUps_user_id",
@@ -310,22 +355,22 @@ namespace Clinic_Management_API.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Equipments");
-
-            migrationBuilder.DropTable(
-                name: "Treatments");
+                name: "CheckUps");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "CheckUps");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
+                name: "Equipments");
+
+            migrationBuilder.DropTable(
                 name: "Medicines");
+
+            migrationBuilder.DropTable(
+                name: "Treatments");
         }
     }
 }
